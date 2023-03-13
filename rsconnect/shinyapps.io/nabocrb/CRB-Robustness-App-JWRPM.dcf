@@ -1,0 +1,13 @@
+name: CRB-Robustness-App-JWRPM
+title: CRB-Robustness-App-JWRPM
+username:
+account: nabocrb
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8556906
+bundleId: 6953541
+url: https://nabocrb.shinyapps.io/CRB-Robustness-App-JWRPM/
+when: 1678738477.38585
+lastSyncTime: 1678738477.38586
+asMultiple: FALSE
+asStatic: FALSE

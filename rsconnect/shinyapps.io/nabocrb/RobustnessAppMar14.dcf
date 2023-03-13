@@ -1,0 +1,12 @@
+name: RobustnessAppMar14
+title: RobustnessAppMar14
+username:
+account: nabocrb
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3789614
+bundleId: 4587103
+url: https://nabocrb.shinyapps.io/RobustnessAppMar14/
+when: 1620761928.60883
+asMultiple: FALSE
+asStatic: FALSE

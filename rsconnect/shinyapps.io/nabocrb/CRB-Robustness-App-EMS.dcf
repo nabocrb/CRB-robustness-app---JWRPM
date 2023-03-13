@@ -1,0 +1,13 @@
+name: CRB-Robustness-App-EMS
+title: CRB-Robustness-App-EMS
+username:
+account: nabocrb
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7999046
+bundleId: 6723390
+url: https://nabocrb.shinyapps.io/CRB-Robustness-App-EMS/
+when: 1673474079.75471
+lastSyncTime: 1673474079.75471
+asMultiple: FALSE
+asStatic: FALSE
