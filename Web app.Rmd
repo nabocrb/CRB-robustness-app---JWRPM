@@ -2,7 +2,7 @@
 title: "CRB robustness tradeoffs"
 output: 
   flexdashboard::flex_dashboard:
-    source_code: "https://github.com/nabocrb/CRB-Robustness-App-BOR"
+    source_code: "https://github.com/nabocrb/CRB-robustness-app---JWRPM"
     theme: spacelab
     
 runtime: shiny
@@ -766,7 +766,7 @@ df_names=names(metrics_4app_n500)
 name=reactiveValues(n='satisficing')
 observeEvent(input$active_tab,{
     name$n=df_names[input$active_tab+1]
-    # cat(file=stderr(), 'name$n=', name$n, "\n") # prints page name to console for debugging
+    #cat(file=stderr(), 'name$n=', name$n, "\n") # prints page name to console for debugging
 })
 
 # Hurwicz
@@ -1062,11 +1062,10 @@ observeEvent(input$settingsExplore, {modalTrigger$Explore=1+modalTrigger$Explore
 </script>
 
 <script>
- $("body").on("shown.bs.tab", "div[id='section-row-2']", function(e){
+  $("body").on("shown.bs.tab", "div[id='section-row-2'] a.nav-link", function(e){
     Shiny.setInputValue("active_tab", $(e.target).parent().index());
- })
+  })
 </script>
-
 
 
 ```{r, Exploration process tabs, include=FALSE}
@@ -1094,8 +1093,8 @@ tab=reactiveValues(ID=0)
 observeEvent(input$active_page, {
   extract=sub(".*/#section-", "", input$active_page) # obtain characters after /#section- in the html address
   page$ID=extract
-  # cat(file=stderr(), 'page$ID=', page$ID, "\n") # prints page name to console for debugging
-  # cat(file=stderr(), 'input$active_page=', input$active_page, "\n") # prints page name to console for debugging
+  #cat(file=stderr(), 'page$ID=', page$ID, "\n") # prints page name to console for debugging
+  #cat(file=stderr(), 'input$active_page=', input$active_page, "\n") # prints page name to console for debugging
 
 })
 
@@ -1104,6 +1103,11 @@ Explore_all=reactiveValues(df=metrics_4app_n500$satisficing, options=get_options
 
 
 observe({
+  
+  #cat(file=stderr(), 'input$active_tab=', input$active_tab, "\n")
+  #cat(file=stderr(), 'tab$ID=', tab$ID, "\n")
+
+  
   if (!isTruthy(input$active_tab)){
     Explore_all$df=prep$satisficing
     Explore_all$axes=metrics_4app$l$satisficing
@@ -1457,8 +1461,6 @@ output$pcSatisficing=renderPlotly({
 
 labelsregret.from.best=colnames(metrics_4app_n500$regret.from.best)
 
-plotlyOutput("pcRegret.From.Best")
-
 
 output$pcRegret.From.Best=renderPlotly({
   
@@ -1482,6 +1484,8 @@ output$pcRegret.From.Best=renderPlotly({
   p
   
 })
+
+plotlyOutput("pcRegret.From.Best")
 
 ```
 
