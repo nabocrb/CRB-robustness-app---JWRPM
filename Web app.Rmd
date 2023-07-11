@@ -402,8 +402,19 @@ Column {.tabset .tabset-fade data-width=600}
 
 
 ```{r, background image}
-include_graphics('https://i.imgur.com/wX9ftwq.png')
+#include_graphics('https://i.imgur.com/wX9ftwq.png')
+output$IntroFig=renderImage({
 
+          filename <- normalizePath("images/Overview.png")
+
+
+          list(src=filename, width="1485px", height="860px")
+
+        }, deleteFile = F)
+
+fluidRow(column(width=11, offset = 1,
+        imageOutput("IntroFig")        
+                ))
 ```
 
 ### robustness metrics
