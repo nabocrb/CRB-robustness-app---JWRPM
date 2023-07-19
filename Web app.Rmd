@@ -2011,7 +2011,7 @@ div(style="margin-bottom:5px") # adds padding between buttons
 
 custom_options=reactive({
   cols=colnames(prep_custom.df()) # -1 to remove ID as option
-  cols=cols[which(startsWith(cols, pattern='X')==FALSE)]
+  cols=cols[which(startsWith(cols, 'X')==FALSE)]
   all=c('None', cols)
   all
   })
