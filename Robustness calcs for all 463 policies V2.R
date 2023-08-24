@@ -6,7 +6,7 @@
 ## Libaries
 
 library(dplyr)
-setwd('G:/My Drive/CU Boulder/CRB publications/Robustness app related/CRB robustness app EMS/CRB-Robustness-App-BOR') # directory to robustness function library.R
+setwd('G:/My Drive/CU Boulder/Phase 3 Robustness Calculations/R/scripts') # directory to robustness function library.R
 source('robustness function library.R')
 
 
@@ -23,16 +23,14 @@ obj$Powell.WY.Release=obj$Powell.WY.Release/1e6
 
 MOEA_archive=read.table('Mead Solutions/Archive_463solns.txt') # data from MOEA optimization. From Rebecca
 MOEA_data=MOEA_archive[,15:22] # subset only the objectives (remove decision levers)
-# names=c('Mead.1000', 'LB.Max.Cons.Shortage.Duration', 'LB.Shortage.Frequency',
-#         'LB.Shortage.Volume', 'Max.Annual.LB.Shortage', 'Powell.3490', 'Powell.WY.Release', 'Lee.Ferry.Deficit') # I double checked the names with the spreadsheet Rebecca gave me
-names=c('M1000', 'LB.Dur', 'LB.Freq','LB.Avg', 'LB.Max', 'P3490', 'P.WYR', 'LF.Deficit') 
-
-# the spreadsheet lives here: G:/My Drive/CU Boulder/Phase 3 Robustness Calculations/R/data/Mead Solutions/from Rebecca/Archive_Master_withID.xlsx
+names=c('Mead.1000', 'LB.Max.Cons.Shortage.Duration', 'LB.Shortage.Frequency',
+        'LB.Shortage.Volume', 'Max.Annual.LB.Shortage', 'Powell.3490', 'Powell.WY.Release', 'Lee.Ferry.Deficit') # I double checked the names with the spreadsheet Rebecca gave me
+# the spreadsheet lives here: G:\My Drive\CU Boulder\Phase 3 Robustness Calculations\R\data\Mead Solutions\from Rebecca\Archive_Master_withID.xlsx
 colnames(MOEA_data)=names
 ## unit conversion for MOEA_data
-vol_index2=which(colnames(MOEA_data)%in% c('LB.Avg', 'LB.Max'))
+vol_index2=which(colnames(MOEA_data)%in% c('LB.Shortage.Volume', 'LB.Shortage.Volume.Policy','Max.Annual.LB.Shortage'))
 MOEA_data[vol_index2]=MOEA_data[vol_index2]/1000
-MOEA_data$P.WYR=MOEA_data$P.WYR/1e6
+MOEA_data$Powell.WY.Release=MOEA_data$Powell.WY.Release/1e6
 
 ## define different subsets of objectives, including if they are minimized or maximized
 
@@ -40,35 +38,30 @@ MOEA_data$P.WYR=MOEA_data$P.WYR/1e6
 # allObj=colnames(obj)[-c(1,2)] # includes LB.Shortage.Volume and LB.Shortage.Volume.Policy
 # all_best_if= c('min','min','min','min','min','min','min','min','min')
 
-colnames(obj)=c('TraceNumber', 'policy', 'LB.Avg', 'LB.Avg.Policy', 'LF.Deficit', 'M1000', 'P3490', 'LB.Dur', 'LB.Freq', 'LB.Max', 'P.WYR')
-
-my_order=c('LF.Deficit', 'P.WYR', 'P3490', 'M1000', 'LB.Avg', 'LB.Freq', 'LB.Max', 'LB.Dur')
-
-obj=obj[c('TraceNumber', 'policy', my_order)]
-MOEA_data=MOEA_data[my_order]
-
+obj8=colnames(obj)[-c(1,2,4)] # excludes LB.Shortage.Volume.Policy, keeps LB.Shortage.Volume
 obj8_best_if=c('min','min','min','min','min','min','min','min')
 
 ## select objectives to use in the robustness metrics
 
-obj_vec=my_order
+obj_vec=obj8
 best_if=obj8_best_if
 
 metrics.list=list() # preallocate a list to store calculations
 
 ############################## Satisficing #########
 
-satisficing.M1000=satisficing(data=obj, objectives='M1000', thresholds = 10)
-satisficing.P3490=satisficing(objectives='P3490', thresholds = 5)
-satisficing.LB.Avg=satisficing(objectives='LB.Avg', thresholds=600)
-sat.dev.M1000=satisficing.deviation(objectives='M1000', thresholds=10)
-sat.dev.P3490=satisficing.deviation(objectives='P3490', thresholds = 5)
-sat.dev.LB.Avg=satisficing.deviation(objectives='LB.Avg', thresholds = 600)
+satisficing.Mead.1000=satisficing(data=obj, objectives='Mead.1000', thresholds = 10)
+satisficing.Powell.3490=satisficing(objectives='Powell.3490', thresholds = 5)
+satisficing.LBSV=satisficing(objectives='LB.Shortage.Volume', thresholds=600)
+sat.dev.Mead.1000=satisficing.deviation(objectives='Mead.1000', thresholds=10)
+sat.dev.Powell.3490=satisficing.deviation(objectives='Powell.3490', thresholds = 5)
+sat.dev.LBSV=satisficing.deviation(objectives='LB.Shortage.Volume', thresholds = 600)
 
 
-satisficing.df=data.frame(policy=satisficing.M1000$policy, sat.M1000=satisficing.M1000$satisficing, sat.P3490=satisficing.P3490$satisficing, sat.LB.Avg=satisficing.LB.Avg$satisficing,
-                          sat.dev.M1000=sat.dev.M1000$satisficing.deviation, sat.dev.P3490=sat.dev.P3490$satisficing.deviation,
-                          sat.dev.LB.Avg=sat.dev.LB.Avg$satisficing.deviation)
+satisficing.df=data.frame(satisficing.Mead.1000, satisficing.Powell.3490=satisficing.Powell.3490$satisficing, satisficing.LBSV=satisficing.LBSV$satisficing,
+                          sat.dev.Mead.1000=sat.dev.Mead.1000$satisficing.deviation, sat.dev.Powell.3490=sat.dev.Powell.3490$satisficing.deviation,
+                          sat.dev.LBSV=sat.dev.LBSV$satisficing.deviation)
+colnames(satisficing.df)[2]='satisficing.Mead.1000'
 
 metrics.list[['satisficing']]=satisficing.df
 
@@ -95,7 +88,7 @@ metrics.list[['percent.deviation']]=percent_deviation(data=obj, baseline = MOEA_
 
 ############################# Laplace's PIR ######################
 
-metrics.list[['mean']]=LaplacePIR(objectives = obj_vec)
+metrics.list[['Laplaces.PIR']]=LaplacePIR(objectives = obj_vec)
 
 ############################# Hurwicz OP #######################
 
@@ -142,9 +135,14 @@ for (i in names(metrics.list)){
 
 ####################### export data ########################
 
+# doesn't include non dominated front
+setwd('G:/My Drive/CU Boulder/Phase 3 Robustness Calculations/R/data')
+
+saveRDS(metrics.list, file='Robustness_metrics_463solns_List.rds')
+
 # includes non dominated front. Specifically for robustness app
 
-setwd('G:/My Drive/CU Boulder/CRB publications/Robustness app related/CRB robustness app EMS/CRB-Robustness-App-BOR')
+setwd('G:/My Drive/CU Boulder/Phase 3 Robustness Calculations/R/scripts/Interactive dashboards/Robustness App All policies V5/CRB-Robustness-App-BOR')
 saveRDS(metrics_4app, file = 'tradeoff_dataframes.rds')
 
 # also send data w/out non dominated front to app
