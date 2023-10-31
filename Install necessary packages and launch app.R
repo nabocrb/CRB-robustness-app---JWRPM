@@ -37,3 +37,6 @@ filename='Web app.Rmd'
 
 # launch app to your web browser
 rmarkdown::run(filename, shiny_args = list(port = 3838, host = "0.0.0.0", launch.browser=T))
+
+# render to your Viewer. From viewer, can publish to a server like shinyapps.io or open in browser
+# rmarkdown::run(filename, shiny_args = list(port = 3838, host = "0.0.0.0"))
