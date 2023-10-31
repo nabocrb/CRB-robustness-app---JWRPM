@@ -16,7 +16,7 @@ packages=c(
   'shinyBS',
   'Kendall',
   'here'
-
+  
 )
 
 to_install=packages[!(packages %in% installed.packages()[,"Package"])]
@@ -37,6 +37,3 @@ filename='Web app.Rmd'
 
 # launch app to your web browser
 rmarkdown::run(filename, shiny_args = list(port = 3838, host = "0.0.0.0", launch.browser=T))
-
-# to launch in Rstudio
-rmarkdown::run(filename, shiny_args = list(port = 3838, host = "0.0.0.0"))
