@@ -553,7 +553,7 @@ ranges <- reactiveValues(a=list())
 
 observeEvent(eventExpr = event_data("plotly_restyle", source = "pcoords"),{
   temp=get_brush_ranges(source = "pcoords", prep_df = prep$optimization)
-  if (is.na(temp)){
+  if (is.na(temp[1])){
     # do nothing
   } else {
      ranges$a[[temp[[1]]]]=temp[[2]]
@@ -1177,7 +1177,7 @@ rangesExplore <- reactiveValues(a=list())
 observeEvent(eventExpr = event_data("plotly_restyle", source = name$n),{
 
   temp=get_brush_ranges(source = name$n, prep_df = Explore_all$df)
-    if (is.na(temp)){
+    if (is.na(temp[1])){
     # do nothing
   } else {
      rangesExplore$a[[temp[[1]]]]=temp[[2]]
@@ -1768,7 +1768,7 @@ output$Explore_DV=renderPlotly({
   req(input$xAxisExplore %in% colnames(filter.Explore()))
   
   
-  if(startsWith(input$xAxisExplore, 'satisficing')){
+  if(startsWith(input$xAxisExplore, 'sat')){
     max_or_min='max'
   } else {
     max_or_min='min'
@@ -2262,7 +2262,7 @@ observeEvent(eventExpr = event_data("plotly_restyle", source = "pcoordsCustom"),
   df=data.frame(prep_custom.df()[,1:nvar()],front=front.Custom$f)
 
   temp=get_brush_ranges(source = "pcoordsCustom", prep_df = df)
-    if (is.na(temp)){
+    if (is.na(temp[1])){
     # do nothing
   } else {
      rangesCustom$a[[temp[[1]]]]=temp[[2]]
@@ -2505,7 +2505,7 @@ Row {.tabset .tabset-fade data-height=275}
 
 min_or_max_cust=reactive({
   
-  if (startsWith(input$xAxisCustom, 'satisficing.satisficing')){
+  if (startsWith(input$xAxisCustom, 'satisficing.sat')){
     'max'
   }else {
     'min'
